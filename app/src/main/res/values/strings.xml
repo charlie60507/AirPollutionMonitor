@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AirPollutionMonitor</string>
+    <string name="search_hint">Please enter to search</string>
+</resources>
