@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="low_pollution_card_padding">5dp</dimen>
+    <dimen name="high_pollution_number_size">25sp</dimen>
+    <dimen name="recycler_view_horizontal_padding">5dp</dimen>
+    <dimen name="high_pollution_location_padding">5dp</dimen>
+    <dimen name="image_btn_size">30dp</dimen>
+</resources>

@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">AirPollutionMonitor</string>
     <string name="search_hint">Please enter to search</string>
+    <string name="good_status_hint">The status is good, we want to go out to have fun</string>
+    <string name="good_status">良好</string>
 </resources>
