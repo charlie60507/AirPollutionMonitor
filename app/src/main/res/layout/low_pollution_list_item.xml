@@ -1,6 +1,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="100dp"
+    android:layout_width="@dimen/low_pollution_card_width"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     android:padding="6dp"
@@ -9,11 +9,11 @@
     app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="100dp"
+        android:layout_width="@dimen/low_pollution_card_width"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingVertical="@dimen/low_pollution_card_padding"
-        android:paddingHorizontal="@dimen/low_pollution_card_padding">
+        android:paddingHorizontal="@dimen/low_pollution_card_padding"
+        android:paddingVertical="@dimen/low_pollution_card_padding">
 
         <TextView
             android:id="@+id/number_text_view"
@@ -23,11 +23,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/location_text_view"
+            android:id="@+id/county_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/number_text_view"
             app:layout_constraintEnd_toStartOf="@+id/pm25_value_text_view"
+            app:layout_constraintStart_toEndOf="@+id/number_text_view"
             app:layout_constraintTop_toTopOf="@+id/number_text_view" />
 
         <TextView
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/site_name_text_view"
+            android:id="@+id/site_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"

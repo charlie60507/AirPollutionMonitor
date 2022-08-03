@@ -13,13 +13,13 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
         private const val TAG = "PollutedViewModel"
     }
 
-    val highInfo: LiveData<List<Record>>
+    val highInfo: LiveData<MutableList<Record>>
         get() = _highInfo
-    val lowInfo: LiveData<List<Record>>
+    val lowInfo: LiveData<MutableList<Record>>
         get() = _lowInfo
 
-    private var _highInfo = MutableLiveData<List<Record>>()
-    private var _lowInfo = MutableLiveData<List<Record>>()
+    private var _highInfo = MutableLiveData<MutableList<Record>>()
+    private var _lowInfo = MutableLiveData<MutableList<Record>>()
 
     fun getPollutedInfo() {
         viewModelScope.launch {

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">AirPollutionMonitor</string>
-    <string name="search_hint">Please enter to search</string>
+    <string name="search_title">search</string>
+    <string name="search_hint">請輸入「站名」</string>
     <string name="good_status_hint">The status is good, we want to go out to have fun</string>
     <string name="good_status">良好</string>
+    <string name="normal_status_toast_text">Don\'t go out</string>
+    <string name="empty_result_text">請輸入「站名」\n查詢該地區空汙資訊</string>
 </resources>

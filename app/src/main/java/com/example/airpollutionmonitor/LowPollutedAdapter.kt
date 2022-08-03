@@ -14,8 +14,8 @@ class LowPollutedAdapter : RecyclerView.Adapter<LowPollutedAdapter.ViewHolder>()
         RecyclerView.ViewHolder(binding.root) {
         fun bind(pos: Int, record: Record) {
             binding.numberTextView.text = (pos + 1).toString()
-            binding.locationTextView.text = record.county
-            binding.siteNameTextView.text = record.sitename
+            binding.siteTextView.text = record.sitename
+            binding.countyTextView.text = record.county
             binding.pm25ValueTextView.text = record.pm25
             binding.statusTextView.text =record.status
         }

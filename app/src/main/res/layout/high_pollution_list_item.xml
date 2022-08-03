@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/location_text_view"
+        android:id="@+id/site_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/high_pollution_location_padding"
@@ -26,19 +26,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/site_text_view"
+        android:id="@+id/county_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/high_pollution_location_padding"
         android:paddingEnd="@dimen/high_pollution_location_padding"
         app:layout_constraintStart_toEndOf="@+id/number_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/location_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/site_text_view" />
 
     <TextView
         android:id="@+id/pm25_value_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/img_btn"
+        app:layout_constraintEnd_toStartOf="@+id/img_btn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -55,16 +55,18 @@
         android:ellipsize="end"
         android:gravity="end"
         android:singleLine="true"
-        app:layout_constraintEnd_toEndOf="@+id/img_btn"
+        app:layout_constraintEnd_toStartOf="@+id/img_btn"
         app:layout_constraintStart_toStartOf="@+id/horizontal_middle_guide_line"
         app:layout_constraintTop_toBottomOf="@+id/pm25_value_text_view" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/img_btn"
         android:layout_width="@dimen/image_btn_size"
         android:layout_height="@dimen/image_btn_size"
-        android:src="@drawable/ic_search"
+        android:clickable="true"
+        android:src="@drawable/ic_arrow"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
