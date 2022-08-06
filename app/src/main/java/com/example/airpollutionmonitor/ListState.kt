@@ -6,4 +6,5 @@ sealed class ListState {
     object Found : ListState()
     class NotFound(var keyword: String?) : ListState()
     object Refreshing : ListState()
+    object Timeout : ListState()
 }

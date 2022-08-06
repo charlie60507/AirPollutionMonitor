@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initViews()
         initObservers()
-        handleViewState(ListState.Refreshing)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -128,13 +127,21 @@ class MainActivity : AppCompatActivity() {
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.VISIBLE
                 binding.emptyPageTextView.text =
-                    String.format(resources.getString(R.string.not_found_result), state.keyword)
+                    String.format(resources.getString(R.string.not_found_result_text), state.keyword)
             }
             is ListState.Refreshing -> {
                 binding.recyclerViewContainer.isRefreshing = true
                 binding.highPollutedRecyclerView.visibility = View.GONE
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.GONE
+            }
+            is ListState.Timeout -> {
+                binding.recyclerViewContainer.isRefreshing = false
+                binding.highPollutedRecyclerView.visibility = View.GONE
+                binding.lowPollutedRecyclerView.visibility = View.GONE
+                binding.emptyPageTextView.visibility = View.VISIBLE
+                binding.emptyPageTextView.text =
+                    String.format(resources.getString(R.string.timeout_result_text))
             }
         }
     }

@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airpollutionmonitor.data.Record
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 
 private const val TAG = "PollutedViewModel"
 
@@ -17,6 +19,11 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
     val listState: LiveData<ListState>
         get() = _listState
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, error ->
+        when (error) {
+            is SocketTimeoutException -> _listState.value = ListState.Timeout
+        }
+    }
     private var _highInfo = MutableLiveData<MutableList<Record>>()
     private var _lowInfo = MutableLiveData<MutableList<Record>>()
     private var _listState = MutableLiveData<ListState>()
@@ -26,14 +33,13 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
     }
 
     fun getPollutedInfo() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             _listState.value = ListState.Refreshing
             val info = dataRepository.getPollutedInfo()
             _highInfo.value = info.first
             _lowInfo.value = info.second
             _listState.value = ListState.ShowAll
         }
-
     }
 
     fun handleFilter(
@@ -41,7 +47,7 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
         opened: Boolean,
         keyword: String
     ) {
-        dataRepository.getFilterListState(adapter, opened,keyword) {
+        dataRepository.getFilterListState(adapter, opened, keyword) {
             _listState.value = it
         }
     }
