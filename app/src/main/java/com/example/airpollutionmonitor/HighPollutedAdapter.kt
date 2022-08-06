@@ -14,8 +14,8 @@ import com.example.airpollutionmonitor.databinding.HighPollutionListItemBinding
 private const val TAG = "HighPollutedAdapter"
 
 class HighPollutedAdapter : RecyclerView.Adapter<HighPollutedAdapter.ViewHolder>(), Filterable {
-    var data = mutableListOf<Record>()
-    var dataFilter = mutableListOf<Record>()
+    var fullData = mutableListOf<Record>()
+    var filterData = mutableListOf<Record>()
 
     class ViewHolder(private val binding: HighPollutionListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -57,19 +57,21 @@ class HighPollutedAdapter : RecyclerView.Adapter<HighPollutedAdapter.ViewHolder>
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(position, dataFilter[position])
+        holder.bind(position, filterData[position])
     }
 
-    override fun getItemCount(): Int = dataFilter.size
+    override fun getItemCount(): Int = filterData.size
 
-    // TODO: need to filter county & site
     override fun getFilter(): Filter = object : Filter() {
         override fun performFiltering(str: CharSequence): FilterResults {
             val filteredList: ArrayList<Record> = ArrayList()
             if (str.isEmpty()) {
-                filteredList.addAll(data)
+                filteredList.addAll(fullData)
             } else {
-                data.filterTo(filteredList, { it.county.startsWith(str, true) })
+                fullData.filterTo(filteredList) {
+                    it.county.contains(str, true)
+                            || it.sitename.contains(str, true)
+                }
             }
             val results = FilterResults()
             results.values = filteredList
@@ -78,8 +80,8 @@ class HighPollutedAdapter : RecyclerView.Adapter<HighPollutedAdapter.ViewHolder>
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
             Log.d(TAG, "publishResults")
-            dataFilter.clear()
-            dataFilter.addAll(results.values as ArrayList<Record>)
+            filterData.clear()
+            filterData.addAll(results.values as ArrayList<Record>)
             notifyDataSetChanged()
         }
     }

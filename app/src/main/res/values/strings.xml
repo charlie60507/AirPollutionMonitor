@@ -6,4 +6,5 @@
     <string name="good_status">良好</string>
     <string name="normal_status_toast_text">Don\'t go out</string>
     <string name="empty_result_text">請輸入「站名」\n查詢該地區空汙資訊</string>
+    <string name="not_found_result">找不到「%0$s」\n相關的空汙資訊</string>
 </resources>

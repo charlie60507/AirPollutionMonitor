@@ -1,7 +1,6 @@
 package com.example.airpollutionmonitor
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -41,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.highInfo.observe(this) {
             val listFilter = mutableListOf<Record>()
             listFilter.addAll(it)
-            highPollutedAdapter.data = it
-            highPollutedAdapter.dataFilter = listFilter
+            highPollutedAdapter.fullData = it
+            highPollutedAdapter.filterData = listFilter
             highPollutedAdapter.notifyDataSetChanged()
         }
         viewModel.lowInfo.observe(this) {
@@ -58,15 +57,13 @@ class MainActivity : AppCompatActivity() {
         searchItem?.apply {
             setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-                    Log.d(TAG, "onMenuItemActionExpand")
-                    showEmptyPage(true)
+                    showResult(ListState.Hide)
                     isSearchOpened = true
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-                    Log.d(TAG, "onMenuItemActionCollapse")
-                    showEmptyPage(false)
+                    showResult(ListState.ShowAll)
                     isSearchOpened = false
                     return true
                 }
@@ -87,26 +84,55 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun handleFilter(opened: Boolean, s: String?): Boolean {
-        highPollutedAdapter.filter.filter(s)
-        if (!opened || (s != null && s.isNotEmpty())) {
-            showEmptyPage(false)
-        } else {
-            showEmptyPage(true)
+    private fun handleFilter(opened: Boolean, keyword: String?): Boolean {
+        highPollutedAdapter.filter.filter(keyword) {
+            if (!opened || (keyword != null && keyword.isNotEmpty())) {
+                when (highPollutedAdapter.itemCount) {
+                    0 -> showResult(ListState.NotFound, keyword)
+                    highPollutedAdapter.fullData.size -> showResult(ListState.ShowAll)
+                    else -> showResult(ListState.Found)
+                }
+            } else {
+                showResult(ListState.Hide, keyword)
+            }
         }
         return true
     }
 
-    private fun showEmptyPage(show: Boolean) {
-        if (show) {
-            binding.lowPollutedRecyclerView.visibility = View.GONE
-            binding.highPollutedRecyclerView.visibility = View.GONE
-            binding.emptyPage.visibility = View.VISIBLE
-        } else {
-            binding.lowPollutedRecyclerView.visibility = View.VISIBLE
-            binding.highPollutedRecyclerView.visibility = View.VISIBLE
-            binding.emptyPage.visibility = View.GONE
+    private fun showResult(state: ListState, keyWord: String? = null) {
+        when (state) {
+            ListState.ShowAll -> {
+                binding.highPollutedRecyclerView.visibility = View.VISIBLE
+                binding.lowPollutedRecyclerView.visibility = View.VISIBLE
+                binding.emptyPageTextView.visibility = View.GONE
+            }
+            ListState.Found -> {
+                binding.highPollutedRecyclerView.visibility = View.VISIBLE
+                binding.lowPollutedRecyclerView.visibility = View.GONE
+                binding.emptyPageTextView.visibility = View.GONE
+            }
+            ListState.Hide -> {
+                binding.highPollutedRecyclerView.visibility = View.GONE
+                binding.lowPollutedRecyclerView.visibility = View.GONE
+                binding.emptyPageTextView.visibility = View.VISIBLE
+                binding.emptyPageTextView.text =
+                    String.format(resources.getString(R.string.empty_result_text))
+            }
+            ListState.NotFound -> {
+                binding.highPollutedRecyclerView.visibility = View.GONE
+                binding.lowPollutedRecyclerView.visibility = View.GONE
+                binding.emptyPageTextView.visibility = View.VISIBLE
+                binding.emptyPageTextView.text =
+                    String.format(resources.getString(R.string.not_found_result), keyWord)
+            }
         }
+    }
+
+    sealed class ListState {
+        object ShowAll : ListState()
+        object Hide : ListState()
+        object Found : ListState()
+        object NotFound : ListState()
     }
 
 }
