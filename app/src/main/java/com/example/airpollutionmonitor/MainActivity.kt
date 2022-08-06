@@ -23,6 +23,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initViews()
+        initObservers()
+        handleViewState(ListState.Refreshing)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.items, menu)
+        initOptionsMenu(menu)
+        return true
+    }
+
+    private fun initViews() {
         binding.highPollutedRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = highPollutedAdapter
@@ -34,9 +46,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.getPollutedInfo()
+    private fun initObservers() {
+        binding.recyclerViewContainer.setOnRefreshListener {
+            viewModel.getPollutedInfo()
+        }
         viewModel.highInfo.observe(this) {
             val listFilter = mutableListOf<Record>()
             listFilter.addAll(it)
@@ -48,22 +61,24 @@ class MainActivity : AppCompatActivity() {
             lowPollutedAdapter.data = it
             lowPollutedAdapter.notifyDataSetChanged()
         }
+        viewModel.listState.observe(this) {
+            handleViewState(it)
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.items, menu)
+    private fun initOptionsMenu(menu: Menu?) {
         val searchItem = menu?.findItem(R.id.action_search)
         var isSearchOpened = false
         searchItem?.apply {
             setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-                    showResult(ListState.Hide)
+                    handleViewState(ListState.Hide)
                     isSearchOpened = true
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-                    showResult(ListState.ShowAll)
+                    handleViewState(ListState.ShowAll)
                     isSearchOpened = false
                     return true
                 }
@@ -72,67 +87,56 @@ class MainActivity : AppCompatActivity() {
         (searchItem?.actionView as SearchView).apply {
             queryHint = baseContext.getString(R.string.search_hint)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return handleFilter(isSearchOpened, query)
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    viewModel.handleFilter(highPollutedAdapter, isSearchOpened, query)
+                    return true
                 }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    return handleFilter(isSearchOpened, newText)
+                override fun onQueryTextChange(newText: String): Boolean {
+                    viewModel.handleFilter(highPollutedAdapter, isSearchOpened, newText)
+                    return true
                 }
             })
         }
-        return true
     }
 
-    private fun handleFilter(opened: Boolean, keyword: String?): Boolean {
-        highPollutedAdapter.filter.filter(keyword) {
-            if (!opened || (keyword != null && keyword.isNotEmpty())) {
-                when (highPollutedAdapter.itemCount) {
-                    0 -> showResult(ListState.NotFound, keyword)
-                    highPollutedAdapter.fullData.size -> showResult(ListState.ShowAll)
-                    else -> showResult(ListState.Found)
-                }
-            } else {
-                showResult(ListState.Hide, keyword)
-            }
-        }
-        return true
-    }
-
-    private fun showResult(state: ListState, keyWord: String? = null) {
+    private fun handleViewState(state: ListState) {
         when (state) {
-            ListState.ShowAll -> {
+            is ListState.ShowAll -> {
+                binding.recyclerViewContainer.isRefreshing = false
                 binding.highPollutedRecyclerView.visibility = View.VISIBLE
                 binding.lowPollutedRecyclerView.visibility = View.VISIBLE
                 binding.emptyPageTextView.visibility = View.GONE
             }
-            ListState.Found -> {
+            is ListState.Found -> {
+                binding.recyclerViewContainer.isRefreshing = false
                 binding.highPollutedRecyclerView.visibility = View.VISIBLE
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.GONE
             }
-            ListState.Hide -> {
+            is ListState.Hide -> {
+                binding.recyclerViewContainer.isRefreshing = false
                 binding.highPollutedRecyclerView.visibility = View.GONE
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.VISIBLE
                 binding.emptyPageTextView.text =
                     String.format(resources.getString(R.string.empty_result_text))
             }
-            ListState.NotFound -> {
+            is ListState.NotFound -> {
+                binding.recyclerViewContainer.isRefreshing = false
                 binding.highPollutedRecyclerView.visibility = View.GONE
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.VISIBLE
                 binding.emptyPageTextView.text =
-                    String.format(resources.getString(R.string.not_found_result), keyWord)
+                    String.format(resources.getString(R.string.not_found_result), state.keyword)
+            }
+            is ListState.Refreshing -> {
+                binding.recyclerViewContainer.isRefreshing = true
+                binding.highPollutedRecyclerView.visibility = View.GONE
+                binding.lowPollutedRecyclerView.visibility = View.GONE
+                binding.emptyPageTextView.visibility = View.GONE
             }
         }
-    }
-
-    sealed class ListState {
-        object ShowAll : ListState()
-        object Hide : ListState()
-        object Found : ListState()
-        object NotFound : ListState()
     }
 
 }
