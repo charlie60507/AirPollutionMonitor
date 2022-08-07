@@ -5,7 +5,7 @@ import com.example.airpollutionmonitor.service.AirPollutedNetwork
 import com.example.airpollutionmonitor.ui.HighPollutedAdapter
 import com.example.airpollutionmonitor.viewmodel.ListState
 
-private const val PM25_THRESHOLD = 8
+private const val PM25_THRESHOLD = 10
 
 object DataRepository {
     private val apiService = AirPollutedNetwork.apiService
