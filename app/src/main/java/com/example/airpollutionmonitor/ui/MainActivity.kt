@@ -1,6 +1,7 @@
-package com.example.airpollutionmonitor
+package com.example.airpollutionmonitor.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -8,13 +9,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.airpollutionmonitor.R
 import com.example.airpollutionmonitor.data.Record
 import com.example.airpollutionmonitor.databinding.ActivityMainBinding
+import com.example.airpollutionmonitor.repo.DataRepository
+import com.example.airpollutionmonitor.viewmodel.ListState
+import com.example.airpollutionmonitor.viewmodel.PollutedViewModel
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private var searchItem: MenuItem? = null
     private var viewModel = PollutedViewModel(DataRepository)
     private val highPollutedAdapter = HighPollutedAdapter()
     private val lowPollutedAdapter = LowPollutedAdapter()
@@ -66,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initOptionsMenu(menu: Menu?) {
-        val searchItem = menu?.findItem(R.id.action_search)
+        searchItem = menu?.findItem(R.id.action_search)
         var isSearchOpened = false
         searchItem?.apply {
             setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
@@ -100,18 +106,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleViewState(state: ListState) {
+        Log.d(TAG, "AAAAA handleViewState=${state}")
         when (state) {
             is ListState.ShowAll -> {
                 binding.recyclerViewContainer.isRefreshing = false
                 binding.highPollutedRecyclerView.visibility = View.VISIBLE
                 binding.lowPollutedRecyclerView.visibility = View.VISIBLE
                 binding.emptyPageTextView.visibility = View.GONE
+                searchItem?.isVisible = true
             }
             is ListState.Found -> {
                 binding.recyclerViewContainer.isRefreshing = false
                 binding.highPollutedRecyclerView.visibility = View.VISIBLE
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.GONE
+                searchItem?.isVisible = true
             }
             is ListState.Hide -> {
                 binding.recyclerViewContainer.isRefreshing = false
@@ -120,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 binding.emptyPageTextView.visibility = View.VISIBLE
                 binding.emptyPageTextView.text =
                     String.format(resources.getString(R.string.empty_result_text))
+                searchItem?.isVisible = true
             }
             is ListState.NotFound -> {
                 binding.recyclerViewContainer.isRefreshing = false
@@ -127,13 +137,17 @@ class MainActivity : AppCompatActivity() {
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.VISIBLE
                 binding.emptyPageTextView.text =
-                    String.format(resources.getString(R.string.not_found_result_text), state.keyword)
+                    String.format(
+                        resources.getString(R.string.not_found_result_text),
+                        state.keyword
+                    )
             }
             is ListState.Refreshing -> {
                 binding.recyclerViewContainer.isRefreshing = true
                 binding.highPollutedRecyclerView.visibility = View.GONE
                 binding.lowPollutedRecyclerView.visibility = View.GONE
                 binding.emptyPageTextView.visibility = View.GONE
+                searchItem?.isVisible = false
             }
             is ListState.Timeout -> {
                 binding.recyclerViewContainer.isRefreshing = false
@@ -142,6 +156,16 @@ class MainActivity : AppCompatActivity() {
                 binding.emptyPageTextView.visibility = View.VISIBLE
                 binding.emptyPageTextView.text =
                     String.format(resources.getString(R.string.timeout_result_text))
+                searchItem?.isVisible = false
+            }
+            is ListState.NoNetwork -> {
+                binding.recyclerViewContainer.isRefreshing = false
+                binding.highPollutedRecyclerView.visibility = View.GONE
+                binding.lowPollutedRecyclerView.visibility = View.GONE
+                binding.emptyPageTextView.visibility = View.VISIBLE
+                binding.emptyPageTextView.text =
+                    String.format(resources.getString(R.string.no_internet_text))
+                searchItem?.isVisible = false
             }
         }
     }

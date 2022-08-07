@@ -1,4 +1,4 @@
-package com.example.airpollutionmonitor
+package com.example.airpollutionmonitor.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

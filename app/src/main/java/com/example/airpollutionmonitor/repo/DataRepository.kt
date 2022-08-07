@@ -1,7 +1,9 @@
-package com.example.airpollutionmonitor
+package com.example.airpollutionmonitor.repo
 
 import com.example.airpollutionmonitor.data.Record
 import com.example.airpollutionmonitor.service.AirPollutedNetwork
+import com.example.airpollutionmonitor.ui.HighPollutedAdapter
+import com.example.airpollutionmonitor.viewmodel.ListState
 
 private const val PM25_THRESHOLD = 8
 

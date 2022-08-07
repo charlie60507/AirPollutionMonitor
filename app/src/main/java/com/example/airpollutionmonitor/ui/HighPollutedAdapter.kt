@@ -1,4 +1,4 @@
-package com.example.airpollutionmonitor
+package com.example.airpollutionmonitor.ui
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.airpollutionmonitor.R
 import com.example.airpollutionmonitor.data.Record
 import com.example.airpollutionmonitor.databinding.HighPollutionListItemBinding
 

@@ -8,4 +8,5 @@
     <string name="empty_result_text">請輸入「站名」\n查詢該地區空汙資訊</string>
     <string name="not_found_result_text">找不到「%0$s」\n相關的空汙資訊</string>
     <string name="timeout_result_text">Error occurred…\nPlease swipe down to refresh</string>
+    <string name="no_internet_text">No internet connected…\nPlease connect and try again</string>
 </resources>

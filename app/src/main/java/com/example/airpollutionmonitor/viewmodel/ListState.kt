@@ -1,4 +1,4 @@
-package com.example.airpollutionmonitor
+package com.example.airpollutionmonitor.viewmodel
 
 sealed class ListState {
     object ShowAll : ListState()
@@ -7,4 +7,5 @@ sealed class ListState {
     class NotFound(var keyword: String?) : ListState()
     object Refreshing : ListState()
     object Timeout : ListState()
+    object NoNetwork : ListState()
 }

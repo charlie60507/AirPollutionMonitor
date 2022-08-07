@@ -1,10 +1,14 @@
-package com.example.airpollutionmonitor
+package com.example.airpollutionmonitor.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.airpollutionmonitor.App
 import com.example.airpollutionmonitor.data.Record
+import com.example.airpollutionmonitor.repo.DataRepository
+import com.example.airpollutionmonitor.ui.HighPollutedAdapter
+import com.example.airpollutionmonitor.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
@@ -35,10 +39,14 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
     fun getPollutedInfo() {
         viewModelScope.launch(exceptionHandler) {
             _listState.value = ListState.Refreshing
-            val info = dataRepository.getPollutedInfo()
-            _highInfo.value = info.first
-            _lowInfo.value = info.second
-            _listState.value = ListState.ShowAll
+            if (NetworkUtil.isConnect(App.appContext)) {
+                val info = dataRepository.getPollutedInfo()
+                _highInfo.value = info.first
+                _lowInfo.value = info.second
+                _listState.value = ListState.ShowAll
+            } else {
+                _listState.value = ListState.NoNetwork
+            }
         }
     }
 
@@ -51,4 +59,5 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
             _listState.value = it
         }
     }
+
 }
