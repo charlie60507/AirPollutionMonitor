@@ -1,7 +1,6 @@
 # AirPollutionMonitor
 
-AirPollutionMonitor is an application to monitor air pollution from [API of Environmental Protection Administration (EPA) in Taiwan](https://data.epa.gov.tw/api/v2/aqx_p_432?limit=1000&api_key=cebebe84-e17d-4022-a
-28f-81097fda5896&sort=ImportDate%20desc&format=json).
+AirPollutionMonitor is an application to monitor air pollution from [API of Environmental Protection Administration (EPA) in Taiwan](https://data.epa.gov.tw/api/v2/aqx_p_432?limit=1000&api_key=cebebe84-e17d-4022-a28f-81097fda5896&sort=ImportDate%20desc&format=json).
 
 ### Upper List ###
 Show data with PM2.5 <= 10 in horizontal.  
