@@ -22,6 +22,7 @@
         android:paddingStart="@dimen/high_pollution_location_padding"
         android:paddingEnd="@dimen/high_pollution_location_padding"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/county_text_view"
         app:layout_constraintStart_toEndOf="@+id/number_text_view"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,8 +32,27 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/high_pollution_location_padding"
         android:paddingEnd="@dimen/high_pollution_location_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/number_text_view"
         app:layout_constraintTop_toBottomOf="@+id/site_text_view" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/image_view_guild_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <ImageView
+        android:id="@+id/icon_image_view"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/horizontal_middle_guide_line"
+        app:layout_constraintStart_toEndOf="@+id/image_view_guild_line"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/pm25_value_text_view"

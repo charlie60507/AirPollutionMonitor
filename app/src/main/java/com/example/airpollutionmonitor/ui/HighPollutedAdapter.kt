@@ -1,6 +1,5 @@
 package com.example.airpollutionmonitor.ui
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.airpollutionmonitor.R
 import com.example.airpollutionmonitor.data.Record
 import com.example.airpollutionmonitor.databinding.HighPollutionListItemBinding
+import com.example.airpollutionmonitor.utils.GlideUtils
 
 private const val TAG = "HighPollutedAdapter"
 
@@ -43,7 +43,7 @@ class HighPollutedAdapter : RecyclerView.Adapter<HighPollutedAdapter.ViewHolder>
                     ).show()
                 }
             }
-
+            GlideUtils.loadIconByCountry(binding.root.context, binding.iconImageView, record.county)
         }
     }
 
@@ -80,7 +80,6 @@ class HighPollutedAdapter : RecyclerView.Adapter<HighPollutedAdapter.ViewHolder>
         }
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
-            Log.d(TAG, "publishResults")
             filterData.clear()
             filterData.addAll(results.values as ArrayList<Record>)
             notifyDataSetChanged()

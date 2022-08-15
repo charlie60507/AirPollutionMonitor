@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleViewState(state: ListState) {
-        Log.d(TAG, "AAAAA handleViewState=${state}")
+        Log.d(TAG, "handleViewState=${state}")
         when (state) {
             is ListState.ShowAll -> {
                 binding.recyclerViewContainer.isRefreshing = false
