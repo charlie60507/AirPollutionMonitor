@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airpollutionmonitor.R
@@ -15,19 +16,22 @@ import com.example.airpollutionmonitor.databinding.ActivityMainBinding
 import com.example.airpollutionmonitor.repo.DataRepository
 import com.example.airpollutionmonitor.viewmodel.ListState
 import com.example.airpollutionmonitor.viewmodel.PollutedViewModel
+import com.example.airpollutionmonitor.viewmodel.ViewModelFactory
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var pollutedViewModel: PollutedViewModel
     private var searchItem: MenuItem? = null
-    private var viewModel = PollutedViewModel(DataRepository)
     private val highPollutedAdapter = HighPollutedAdapter()
     private val lowPollutedAdapter = LowPollutedAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        pollutedViewModel =
+            ViewModelProvider(this, ViewModelFactory(DataRepository))[PollutedViewModel::class.java]
         setContentView(binding.root)
         initViews()
         initObservers()
@@ -53,20 +57,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObservers() {
         binding.recyclerViewContainer.setOnRefreshListener {
-            viewModel.getPollutedInfo()
+            pollutedViewModel.getPollutedInfo()
         }
-        viewModel.highInfo.observe(this) {
+        pollutedViewModel.highInfo.observe(this) {
             val listFilter = mutableListOf<Record>()
             listFilter.addAll(it)
             highPollutedAdapter.fullData = it
             highPollutedAdapter.filterData = listFilter
             highPollutedAdapter.notifyDataSetChanged()
         }
-        viewModel.lowInfo.observe(this) {
+        pollutedViewModel.lowInfo.observe(this) {
             lowPollutedAdapter.data = it
             lowPollutedAdapter.notifyDataSetChanged()
         }
-        viewModel.listState.observe(this) {
+        pollutedViewModel.listState.observe(this) {
             handleViewState(it)
         }
     }
@@ -93,12 +97,12 @@ class MainActivity : AppCompatActivity() {
             queryHint = baseContext.getString(R.string.search_hint)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
-                    viewModel.handleFilter(highPollutedAdapter, isSearchOpened, query)
+                    pollutedViewModel.handleFilter(highPollutedAdapter, isSearchOpened, query)
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String): Boolean {
-                    viewModel.handleFilter(highPollutedAdapter, isSearchOpened, newText)
+                    pollutedViewModel.handleFilter(highPollutedAdapter, isSearchOpened, newText)
                     return true
                 }
             })
