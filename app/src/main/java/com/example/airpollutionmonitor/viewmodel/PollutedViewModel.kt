@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.airpollutionmonitor.App
 import com.example.airpollutionmonitor.data.Record
 import com.example.airpollutionmonitor.repo.DataRepository
-import com.example.airpollutionmonitor.ui.HighPollutedAdapter
 import com.example.airpollutionmonitor.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -50,14 +49,18 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
         }
     }
 
-    fun handleFilter(
-        adapter: HighPollutedAdapter,
-        opened: Boolean,
-        keyword: String
-    ) {
-        dataRepository.getFilterListState(adapter, opened, keyword) {
-            _listState.value = it
+    fun handleFilter(itemCount: Int, keyword: String) {
+        viewModelScope.launch(exceptionHandler) {
+            _listState.value =
+                if (keyword.isNotEmpty()) {
+                    if (itemCount == 0) {
+                        ListState.NotFound(keyword)
+                    } else {
+                        ListState.Found
+                    }
+                } else {
+                    ListState.Hide
+                }
         }
     }
-
 }

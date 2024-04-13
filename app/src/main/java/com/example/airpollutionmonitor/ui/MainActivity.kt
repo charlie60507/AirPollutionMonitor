@@ -77,37 +77,45 @@ class MainActivity : AppCompatActivity() {
 
     private fun initOptionsMenu(menu: Menu?) {
         searchItem = menu?.findItem(R.id.action_search)
-        var isSearchOpened = false
-        searchItem?.apply {
-            setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
-                    handleViewState(ListState.Hide)
-                    isSearchOpened = true
-                    return true
-                }
-
-                override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
-                    handleViewState(ListState.ShowAll)
-                    isSearchOpened = false
-                    return true
-                }
-            })
-        }
-        (searchItem?.actionView as SearchView).apply {
-            queryHint = baseContext.getString(R.string.search_hint)
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    pollutedViewModel.handleFilter(highPollutedAdapter, isSearchOpened, query)
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String): Boolean {
-                    pollutedViewModel.handleFilter(highPollutedAdapter, isSearchOpened, newText)
-                    return true
-                }
-            })
+        searchItem?.let {
+            setupSearchItem(it)
+            setupSearchView(it.actionView as? SearchView)
         }
     }
+
+    private fun setupSearchItem(item: MenuItem) {
+        item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                handleViewState(ListState.Hide)
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+                handleViewState(ListState.ShowAll)
+                return true
+            }
+        })
+    }
+
+    private fun setupSearchView(searchView: SearchView?) {
+        searchView?.queryHint = baseContext.getString(R.string.search_hint)
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                filterKeyword(query)
+                return true
+            }
+
+            override fun onQueryTextChange(query: String): Boolean {
+                filterKeyword(query)
+                return true
+            }
+        })
+    }
+
+    private fun filterKeyword(query: String) =
+        highPollutedAdapter.filter.filter(query) {
+            pollutedViewModel.handleFilter(highPollutedAdapter.itemCount, query)
+        }
 
     private fun handleViewState(state: ListState) {
         Log.d(TAG, "handleViewState=${state}")
