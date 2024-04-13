@@ -27,25 +27,4 @@ object DataRepository {
         }
         return Pair(highList, lowList)
     }
-
-    fun getFilterListState(
-        adapter: HighPollutedAdapter,
-        opened: Boolean,
-        keyword: String,
-        callback: (ListState) -> Unit
-    ) {
-        adapter.filter.filter(keyword) {
-            callback(
-                if (!opened || keyword.isNotEmpty()) {
-                    when (adapter.itemCount) {
-                        0 -> ListState.NotFound(keyword)
-                        adapter.fullData.size -> ListState.ShowAll
-                        else -> ListState.Found
-                    }
-                } else {
-                    ListState.Hide
-                }
-            )
-        }
-    }
 }
