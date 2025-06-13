@@ -8,7 +8,7 @@ import retrofit2.http.GET
 import java.util.concurrent.TimeUnit
 
 private const val URL =
-    "https://data.epa.gov.tw"
+    "https://data.moenv.gov.tw"
 private const val URL_PATH =
     "/api/v2/aqx_p_432?limit=1000&api_key=cebebe84-e17d-4022-a28f-81097fda5896&sort=ImportDate%20desc&format=json"
 private const val OKHTTP_TIMEOUT = 10L
