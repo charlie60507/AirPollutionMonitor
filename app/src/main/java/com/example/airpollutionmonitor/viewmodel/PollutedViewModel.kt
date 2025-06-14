@@ -1,7 +1,5 @@
 package com.example.airpollutionmonitor.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.airpollutionmonitor.App
@@ -11,25 +9,26 @@ import com.example.airpollutionmonitor.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
-
-private const val TAG = "PollutedViewModel"
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel() {
-    val highInfo: LiveData<MutableList<Record>>
-        get() = _highInfo
-    val lowInfo: LiveData<MutableList<Record>>
-        get() = _lowInfo
-    val listState: LiveData<ListState>
-        get() = _listState
+    val highInfo: StateFlow<MutableList<Record>>
+        get() = _highInfo.asStateFlow()
+    val lowInfo: StateFlow<MutableList<Record>>
+        get() = _lowInfo.asStateFlow()
+    val listState: StateFlow<ListState>
+        get() = _listState.asStateFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, error ->
         when (error) {
             is SocketTimeoutException -> _listState.value = ListState.Timeout
         }
     }
-    private var _highInfo = MutableLiveData<MutableList<Record>>()
-    private var _lowInfo = MutableLiveData<MutableList<Record>>()
-    private var _listState = MutableLiveData<ListState>()
+    private var _highInfo = MutableStateFlow(mutableListOf<Record>())
+    private var _lowInfo = MutableStateFlow(mutableListOf<Record>())
+    private var _listState = MutableStateFlow<ListState>(ListState.Refreshing)
 
     init {
         getPollutedInfo()
