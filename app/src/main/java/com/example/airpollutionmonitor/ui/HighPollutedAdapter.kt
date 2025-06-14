@@ -12,8 +12,6 @@ import com.example.airpollutionmonitor.data.Record
 import com.example.airpollutionmonitor.databinding.HighPollutionListItemBinding
 import com.example.airpollutionmonitor.utils.GlideUtils
 
-private const val TAG = "HighPollutedAdapter"
-
 class HighPollutedAdapter : RecyclerView.Adapter<HighPollutedAdapter.ViewHolder>(), Filterable {
     var fullData = mutableListOf<Record>()
     var filterData = mutableListOf<Record>()

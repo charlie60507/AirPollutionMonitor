@@ -1,13 +1,12 @@
 package com.example.airpollutionmonitor.utils
 
 import android.content.Context
-import android.util.Log
 import android.widget.ImageView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import timber.log.Timber
 
 object GlideUtils {
-    private const val TAG = "GlideUtils"
     private val countryUrlMap = hashMapOf(
         "臺北市" to "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Taiwan_ROC_political_division_map_Taipei_City_%282010%29.svg/300px-Taiwan_ROC_political_division_map_Taipei_City_%282010%29.svg.png",
         "新北市" to "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Taiwan_ROC_political_division_map_New_Taipei_City.svg/300px-Taiwan_ROC_political_division_map_New_Taipei_City.svg.png",
@@ -39,7 +38,7 @@ object GlideUtils {
 
     private fun loadIconByUrl(context: Context, imageView: ImageView, url: String?) {
         if (url == null) {
-            Log.d(TAG, "url is null")
+            Timber.d("url is null")
             return
         }
         val loadingIcon = CircularProgressDrawable(context).apply {
