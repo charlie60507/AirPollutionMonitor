@@ -58,7 +58,7 @@ class PollutedViewModel(private val dataRepository: DataRepository) : ViewModel(
                         ListState.Found
                     }
                 } else {
-                    ListState.Hide
+                    ListState.ShowAll
                 }
         }
     }
