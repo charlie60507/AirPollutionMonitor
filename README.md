@@ -15,8 +15,8 @@ Filter lower list with keyword
 ## Used Technique ##
 - Kotlin
 - MVVM
-- LiveData
-- Coroutine
+- Coroutine & Flow
+- Compose UI
 - Retrofit
 - ViewBinding
 - Sealed Class
